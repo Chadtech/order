@@ -173,7 +173,7 @@ addBefore : a -> a -> Order a -> Order a
 addBefore newEl el order =
     case order of
         Order_ list ->
-            if newEl /= el
+            if newEl /= el then
                 let
                     check : a -> List a -> List a
                     check thisEl newList =
@@ -184,9 +184,11 @@ addBefore newEl el order =
                         
                 in
                     list
-                        |> List.foldr [] check
+                        |> List.foldr check []
                         |> fromList
-                        |> Order_
+
+            else
+                order
 
 
 {-| Add an element to an order before another element 
@@ -199,7 +201,7 @@ addAfter : a -> a -> Order a -> Order a
 addAfter el newEl order =
     case order of
         Order_ list ->
-            if newEl /= el
+            if newEl /= el then
                 let
                     check : a -> List a -> List a
                     check thisEl newList =
@@ -210,9 +212,10 @@ addAfter el newEl order =
                         
                 in
                     list
-                        |> List.foldr [] check
+                        |> List.foldr check []
                         |> fromList
-                        |> Order_
+            else
+                order
 
 
 
@@ -228,7 +231,7 @@ isBefore : a -> a -> Order a -> Maybe Bool
 isBefore after first order =
     case order of
         Order_ list ->
-            case (getOrderHelper after list, getOrderHelper before list) of
+            case (getOrderHelper after list, getOrderHelper first list) of
                 (Just afterIndex, Just firstIndex) ->
                     if firstIndex < afterIndex then
                         Just True
@@ -242,7 +245,7 @@ isBefore after first order =
 {-| Check if an element is after another in order, if it is in the order at all.-}
 isAfter : a -> a -> Order a -> Maybe Bool
 isAfter first after order =
-    isBefore after first
+    isBefore after first order
 
 
 {-| If the element is in the order, return what place it is in-}
@@ -262,7 +265,7 @@ getOrderOf el order =
 
 getOrderHelper : a -> List a -> Maybe Int
 getOrderHelper el list =
-    getOrderRecusrive el (List.indexedMap (,) list, Nothing)
+    getOrderRecusrive el (List.indexedMap (flip (,)) list, Nothing)
         |> Tuple.second
             
 

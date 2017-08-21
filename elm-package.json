@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "summary": "A type to arrange things first to last",
+    "summary": "A type to arrange things in order",
     "repository": "https://github.com/Chadtech/elm-bool-extra.git",
     "license": "BSD3",
     "source-directories": [
