@@ -2,9 +2,13 @@ module Order
     exposing 
         ( Order
         , empty
+        , isEmpty
         , fromList
         , toList
         , remove
+        , reverse
+        , member
+        , length
         , getOrderOf
         , addFirst
         , addBefore
@@ -22,18 +26,12 @@ module Order
 
 # Basics
 
-@docs empty, isEmpty, fromList, toList, length, reverse, member
+@docs empty, isEmpty, fromList, toList, length, reverse, member, getOrderOf
 
 # Modifying Orders
 
 @docs remove, addFirst, addBefore, addAfter, isBefore, isAfter
 
-
-isEmpty, length, reverse,
-
-# Predicate
-
-@docs allPass, anyPass
 
 -}
 
@@ -134,7 +132,7 @@ fromList list =
             
 {-| Turn an `Order` into a `List`
 
-[ 'u' ] ==  Order.toList <| Order.fromList [ 'u', 'u' ]
+    [ 'u' ] ==  Order.toList <| Order.fromList [ 'u', 'u' ]
 
 -}
 toList : Order a -> List a
