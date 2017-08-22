@@ -37,7 +37,7 @@ isEmpty, length, reverse,
 
 -}
 
-{-|An arrangement of things in an order. An Order is kind of like a list, except there cant be duplicate elements. And, its kind of like a Set, except an Orders elements can go from first to last.
+{-|An arrangement of things in an order. An Order is kind of like a list, except there cant be duplicate elements. And, its kind of like a Set, except an Orders elements go from first to last.
 -}
 type Order a 
     = Order_ (List a)
@@ -170,7 +170,7 @@ addFirst element order =
 
 -}
 addBefore : a -> a -> Order a -> Order a
-addBefore newEl el order =
+addBefore el newEl order =
     case order of
         Order_ list ->
             if newEl /= el then
@@ -178,7 +178,7 @@ addBefore newEl el order =
                     check : a -> List a -> List a
                     check thisEl newList =
                         if thisEl == el then
-                            newEl :: el :: newList
+                            newEl :: thisEl :: newList
                         else
                             thisEl :: newList
                         
@@ -206,7 +206,7 @@ addAfter el newEl order =
                     check : a -> List a -> List a
                     check thisEl newList =
                         if thisEl == el then
-                            newEl :: el :: newList
+                            el :: newEl :: newList
                         else
                             thisEl :: newList
                         

@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
     "summary": "A type to arrange things in order",
-    "repository": "https://github.com/Chadtech/elm-bool-extra.git",
+    "repository": "https://github.com/Chadtech/order.git",
     "license": "BSD3",
     "source-directories": [
         "src"
