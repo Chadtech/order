@@ -137,10 +137,8 @@ remove element (Order list) =
 -}
 addFirst : a -> Order a -> Order a
 addFirst element (Order list) =
-    if List.member element list then
-        Order (element :: (filterFor element list))
-    else
-        Order (element :: list)
+    Order (element :: (filterFor element list))
+
 
 
 {-| Add an element to an order before another element
