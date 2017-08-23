@@ -145,7 +145,7 @@ addFirst element (Order list) =
 
 {-| Add an element to an order before another element
 
-    addBefore `b` `c` (Order.fromList [ `a`, `c`, `d` ])
+    addBefore `c` `b` (Order.fromList [ `a`, `c`, `d` ])
         == Order.fromList [ `a`, `b`, `c`, `d` ]
 
 -}
@@ -169,7 +169,7 @@ addBefore el newEl (Order list) =
 
 {-| Add an element to an order before another element
 
-    addAfter `c` `b` (Order.fromList [ `a`, `b`, `d` ])
+    addAfter `b` `c` (Order.fromList [ `a`, `b`, `d` ])
         == Order.fromList [ `a`, `b`, `c`, `d` ]
 
 -}
