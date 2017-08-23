@@ -1,5 +1,5 @@
-module Order 
-    exposing 
+module Order
+    exposing
         ( Order
         , empty
         , isEmpty
@@ -16,7 +16,6 @@ module Order
         , isBefore
         , isAfter
         )
-
 
 {-| A type to arrange things an order
 
@@ -35,10 +34,12 @@ module Order
 
 -}
 
-{-|An arrangement of things in an order. An Order is kind of like a list, except there cant be duplicate elements. And, its kind of like a Set, except an Orders elements go from first to last.
+
+{-| An arrangement of things in an order. An Order is kind of like a list, except there cant be duplicate elements. And, its kind of like a Set, except an Orders elements go from first to last.
 -}
-type Order a 
-    = Order_ (List a)
+type Order a
+    = Order (List a)
+
 
 {-| Create an empty order
 
@@ -47,18 +48,16 @@ type Order a
 -}
 empty : Order a
 empty =
-    Order_ []
+    Order []
 
 
 {-| Check if an Order is empty
-    
+
     Order.isEmpty Order.empty == True
 -}
 isEmpty : Order a -> Bool
-isEmpty order =
-    case order of
-        Order_ list ->
-            List.isEmpty list
+isEmpty (Order list) =
+    List.isEmpty list
 
 
 {-| Get the length of an Order
@@ -75,10 +74,8 @@ isEmpty order =
     Order.length nobleGases == 6
 -}
 length : Order a -> Int
-length order =
-    case order of
-        Order_ list ->
-            List.length list
+length (Order list) =
+    List.length list
 
 
 {-| Reverse an order
@@ -98,10 +95,8 @@ length order =
 
 -}
 reverse : Order a -> Order a
-reverse order =
-    case order of
-        Order_ list ->
-            Order_ (List.reverse list)
+reverse (Order list) =
+    Order (List.reverse list)
 
 
 {-| Check if an Order contains a member
@@ -110,188 +105,162 @@ reverse order =
 
 -}
 member : a -> Order a -> Bool
-member el order =
-    case order of
-        Order_ list ->
-            List.member el list
+member el (Order list) =
+    List.member el list
 
 
-{-| Create an `Order` from a `List` -}
+{-| Create an `Order` from a `List`
+-}
 fromList : List a -> Order a
 fromList list =
-    let
-        check : a -> List a -> List a
-        check el newList =
-            if List.member el newList then
-                newList
-            else
-                el :: newList            
-    in        
-        Order_ (List.foldr check [] list)
+    Order (List.foldr consIfNotMember [] list)
 
-            
+
 {-| Turn an `Order` into a `List`
 
-    [ 'u' ] ==  Order.toList <| Order.fromList [ 'u', 'u' ]
+    [ 'u' ] == Order.toList <| Order.fromList [ 'u', 'u' ]
 
 -}
 toList : Order a -> List a
-toList order =
-    case order of
-        Order_ list ->
-            list
+toList (Order list) =
+    list
 
 
-{-| Remove an element from an Order -}
+{-| Remove an element from an Order
+-}
 remove : a -> Order a -> Order a
-remove element order =
-    case order of
-        Order_ list ->
-            Order_ (filterFor element list)
+remove element (Order list) =
+    Order (filtearFor element list)
 
 
-{-| Add an element to an order, making it the first one -}
+{-| Add an element to an order, making it the first one
+-}
 addFirst : a -> Order a -> Order a
-addFirst element order =
-    case order of
-        Order_ list ->
-            if List.member element list then
-                Order_ (element :: (filterFor element list))
-            else
-                Order_ (element :: list)
+addFirst element (Order list) =
+    if List.member element list then
+        Order (element :: (filterFor element list))
+    else
+        Order (element :: list)
 
 
-{-| Add an element to an order before another element 
+{-| Add an element to an order before another element
 
     addBefore `b` `c` (Order.fromList [ `a`, `c`, `d` ])
         == Order.fromList [ `a`, `b`, `c`, `d` ]
 
 -}
 addBefore : a -> a -> Order a -> Order a
-addBefore el newEl order =
-    case order of
-        Order_ list ->
-            if newEl /= el then
-                let
-                    check : a -> List a -> List a
-                    check thisEl newList =
-                        if thisEl == el then
-                            newEl :: thisEl :: newList
-                        else
-                            thisEl :: newList
-                        
-                in
-                    list
-                        |> List.foldr check []
-                        |> fromList
-
-            else
-                order
+addBefore el newEl (Order list) =
+    if newEl /= el then
+        let
+            check : a -> List a -> List a
+            check thisEl newList =
+                if thisEl == el then
+                    newEl :: thisEl :: newList
+                else
+                    thisEl :: newList
+        in
+            list
+                |> List.foldr check []
+                |> fromList
+    else
+        Order list
 
 
-{-| Add an element to an order before another element 
+{-| Add an element to an order before another element
 
     addAfter `c` `b` (Order.fromList [ `a`, `b`, `d` ])
         == Order.fromList [ `a`, `b`, `c`, `d` ]
 
 -}
 addAfter : a -> a -> Order a -> Order a
-addAfter el newEl order =
-    case order of
-        Order_ list ->
-            if newEl /= el then
-                let
-                    check : a -> List a -> List a
-                    check thisEl newList =
-                        if thisEl == el then
-                            el :: newEl :: newList
-                        else
-                            thisEl :: newList
-                        
-                in
-                    list
-                        |> List.foldr check []
-                        |> fromList
-            else
-                order
-
+addAfter el newEl (Order list) =
+    if newEl /= el then
+        let
+            check : a -> List a -> List a
+            check thisEl newList =
+                if thisEl == el then
+                    el :: newEl :: newList
+                else
+                    thisEl :: newList
+        in
+            list
+                |> List.foldr check []
+                |> fromList
+    else
+        Order list
 
 
 {-| Check if an element is before another in order, if it is in the order at all.
 
     germanStates = Order.fromList [ "Bavaria", "Brandenberg" ]
 
-    "Bavaria" |> Order.isBefore "Brandenberg" germanStates == Just True
+    ("Bavaria" |> Order.isBefore "Brandenberg") germanStates == Just True
 
-    "Bavaria" |> Order.isBefore "New York City" germanStates == Nothing
+    ("Bavaria" |> Order.isBefore "New York City") germanStates == Nothing
 -}
 isBefore : a -> a -> Order a -> Maybe Bool
-isBefore after first order =
-    case order of
-        Order_ list ->
-            case (getOrderHelper after list, getOrderHelper first list) of
-                (Just afterIndex, Just firstIndex) ->
-                    if firstIndex < afterIndex then
-                        Just True
-                    else
-                        Just False
+isBefore after first (Order list) =
+    case ( getOrderHelper after list, getOrderHelper first list ) of
+        ( Just afterIndex, Just firstIndex ) ->
+            if firstIndex < afterIndex then
+                Just True
+            else
+                Just False
 
-                
-                _ ->
-                    Nothing
+        _ ->
+            Nothing
 
-{-| Check if an element is after another in order, if it is in the order at all.-}
+
+{-| Check if an element is after another in order, if it is in the order at all.
+-}
 isAfter : a -> a -> Order a -> Maybe Bool
 isAfter first after order =
     isBefore after first order
 
 
-{-| If the element is in the order, return what place it is in-}
+{-| If the element is in the order, return what place it is in
+-}
 getOrderOf : a -> Order a -> Maybe Int
-getOrderOf el order =
-    case order of
-        Order_ list ->
-            getOrderHelper el list
-
-
-
+getOrderOf el (Order list) =
+    getOrderHelper el list
 
 
 
 -- HELPERS --
 
 
+consIfNotMember : a -> List a -> List a
+consIfNotMember el list =
+    if List.member el list then
+        list
+    else
+        el :: list
+
+
 getOrderHelper : a -> List a -> Maybe Int
 getOrderHelper el list =
-    getOrderRecusrive el (List.indexedMap (flip (,)) list, Nothing)
+    getOrderRecursive el ( List.indexedMap (flip (,)) list, Nothing )
         |> Tuple.second
-            
 
 
-
-getOrderRecusrive : a -> (List (a, Int), Maybe Int) -> (List (a, Int), Maybe Int)
-getOrderRecusrive el (list, maybeIndex) =
+getOrderRecursive : a -> ( List ( a, Int ), Maybe Int ) -> ( List ( a, Int ), Maybe Int )
+getOrderRecursive el ( list, maybeIndex ) =
     case list of
         x :: xs ->
             let
-                (xEl, index) = x                    
-            in                
+                ( xEl, index ) =
+                    x
+            in
                 if xEl == el then
-                    ([], Just index)
+                    ( [], Just index )
                 else
-                    getOrderRecusrive el (xs, maybeIndex )
+                    getOrderRecursive el ( xs, maybeIndex )
 
         [] ->
-            ([], Nothing)
-
-
-
+            ( [], Nothing )
 
 
 filterFor : a -> List a -> List a
 filterFor element list =
     List.filter ((/=) element) list
-
-
-
-
