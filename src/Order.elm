@@ -130,7 +130,7 @@ toList (Order list) =
 -}
 remove : a -> Order a -> Order a
 remove element (Order list) =
-    Order (filtearFor element list)
+    Order (filterFor element list)
 
 
 {-| Add an element to an order, making it the first one
